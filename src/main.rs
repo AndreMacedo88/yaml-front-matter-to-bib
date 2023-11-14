@@ -28,8 +28,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         volume,
     } = document.metadata;
 
+    // let (author1, ss): (String, Vec<_>) = author.split("and").collect();
+    let authors: Vec<&str> = author.split("and").collect();
+    let first: &str = authors[0].trim();
+    let first: Vec<&str> = first.split(" ").collect();
+    let last_name: &str = first[first.len() - 1];
+    println!("{}", last_name);
+
     let output: String = format!(
-        "@article{{{author}{year},
+        "@article{{{last_name}{year},
     title={{{title}}},
     author={{{author}}},
     journal={{{journal}}},
