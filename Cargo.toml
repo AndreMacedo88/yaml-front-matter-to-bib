@@ -1,0 +1,8 @@
+[package]
+name = "yaml_head_to_bib"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = "1.0.192"
+yaml-front-matter = "0.1.0"
