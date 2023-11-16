@@ -21,14 +21,14 @@ struct Metadata {
 fn main() -> Result<(), Box<dyn Error>> {
     let out_path: &str = "/home/andrem/Documents/notes_science/test.bib";
     let dir_path: &str = "/home/andrem/Documents/notes_science/";
-    // Create a file
-    let file_result = File::create(out_path);
 
+    // create and open a file in the output directory
+    let file_result = File::create(out_path);
     let mut file = match file_result {
         Ok(f) => f,
         Err(e) => panic!("Unable to open file: {:?}", e),
     };
-
+    // cycle the files and directories in the provided path
     for entry in WalkDir::new(dir_path)
         .follow_links(true)
         .into_iter()
@@ -36,27 +36,22 @@ fn main() -> Result<(), Box<dyn Error>> {
     {
         // turn the DirEntry object into a Path object
         let path = entry.path();
-
-        // check if the path is to a directory or to a file that is not a markdown
+        // check if the path is pointing to a directory or to a file that is not a markdown
         if metadata(path).unwrap().is_dir() {
             continue;
         }
         if !path.to_str().unwrap().ends_with(".md") {
             continue;
         }
-
+        // read the file and parse the YAML front matter
         let f: String = fs::read_to_string(path).expect("Should have been able to read the file");
-
         let parsed_document: Result<Document<Metadata>, Box<dyn Error>> =
             YamlFrontMatter::parse::<Metadata>(&f);
-
         let yaml_front_matter: Document<Metadata> = match parsed_document {
             Ok(content) => content,
             Err(_) => continue,
         };
-
-        println!("{}", path.display());
-
+        // unpack the front matter to the Metadata struct
         let Metadata {
             title,
             author,
@@ -66,12 +61,12 @@ fn main() -> Result<(), Box<dyn Error>> {
             volume,
             pages,
         } = yaml_front_matter.metadata;
-
+        // get the first author's last name to use as the Key in the .bib format
         let authors: Vec<&str> = author.split("and").collect();
         let first: &str = authors[0].trim();
         let first: Vec<&str> = first.split(" ").collect();
         let last_name: &str = first[first.len() - 1];
-
+        // build the .bib formatted string to write to file
         let output: String = format!(
             "@article{{{last_name}{year},
     title = {{{title}}},
@@ -85,6 +80,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 "
         );
 
+        // append these lines to the file
         file.write(output.as_bytes())?;
     }
     Ok(())
