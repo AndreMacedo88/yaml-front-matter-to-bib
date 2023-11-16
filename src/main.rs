@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use std::error::Error;
 use std::fs::metadata;
-use std::fs::{self, OpenOptions};
+use std::fs::{self, File};
 use std::io::Write;
 use std::result::Result;
 use walkdir::WalkDir;
@@ -13,13 +13,22 @@ struct Metadata {
     author: String,
     journal: String,
     year: u16,
-    number: u32,
     volume: u32,
+    number: u32,
+    pages: String,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
     let out_path: &str = "/home/andrem/Documents/notes_science/test.bib";
     let dir_path: &str = "/home/andrem/Documents/notes_science/";
+    // Create a file
+    let file_result = File::create(out_path);
+
+    let mut file = match file_result {
+        Ok(f) => f,
+        Err(e) => panic!("Unable to open file: {:?}", e),
+    };
+
     for entry in WalkDir::new(dir_path)
         .follow_links(true)
         .into_iter()
@@ -55,6 +64,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             year,
             number,
             volume,
+            pages,
         } = yaml_front_matter.metadata;
 
         let authors: Vec<&str> = author.split("and").collect();
@@ -69,22 +79,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     journal = {{{journal}}},
     year = {{{year}}},
     number = {{{number}}},
-    volume = {{{volume}}}
+    volume = {{{volume}}},
+    pages = {{{pages}}}
 }}
 "
         );
 
-        // Create a file
-        // let mut data_file = File::create("data.txt").expect("creation failed");
-        // fs::write(out_path, output).expect("Unable to write file.");
-
-        let file = OpenOptions::new().append(true).open(out_path);
-        // .expect("Unable to open file.");
-
-        let _ = match file {
-            Ok(mut f) => f.write(output.as_bytes()),
-            Err(e) => panic!("Unable to open file: {:?}", e),
-        };
+        file.write(output.as_bytes())?;
     }
     Ok(())
 }
