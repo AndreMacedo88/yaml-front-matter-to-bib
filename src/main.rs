@@ -1,8 +1,11 @@
 use serde::Deserialize;
-use std::fs;
 use std::fs::metadata;
+use std::fs::{self, OpenOptions};
 // use walkdir::{DirEntry, WalkDir};
-use walkdir::WalkDir;
+use std::error::Error;
+use std::io::Write;
+use std::result::Result;
+use walkdir::{Result as ResultWalk, WalkDir};
 use yaml_front_matter::{Document, YamlFrontMatter};
 
 #[derive(Deserialize)]
@@ -15,7 +18,8 @@ struct Metadata {
     volume: u32,
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> ResultWalk<()> {
+    let out_path: &str = "/home/andrem/Documents/notes_science/test.bib";
     let dir_path: &str = "/home/andrem/Documents/notes_science/";
     for entry in WalkDir::new(dir_path)
         .follow_links(true)
@@ -35,11 +39,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         let f: String = fs::read_to_string(path).expect("Should have been able to read the file");
 
-        let document_result: Result<Document<Metadata>, Box<dyn std::error::Error>> =
+        let parsed_document: Result<Document<Metadata>, Box<dyn Error>> =
             YamlFrontMatter::parse::<Metadata>(&f);
 
-        let document: Document<Metadata> = match document_result {
-            Ok(yaml_front_matter) => yaml_front_matter,
+        let yaml_front_matter: Document<Metadata> = match parsed_document {
+            Ok(content) => content,
             Err(_) => continue,
         };
 
@@ -52,27 +56,36 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             year,
             number,
             volume,
-        } = document.metadata;
+        } = yaml_front_matter.metadata;
 
         let authors: Vec<&str> = author.split("and").collect();
         let first: &str = authors[0].trim();
         let first: Vec<&str> = first.split(" ").collect();
         let last_name: &str = first[first.len() - 1];
 
-        let _output: String = format!(
+        let output: String = format!(
             "@article{{{last_name}{year},
-        title = {{{title}}},
-        author = {{{author}}},
-        journal = {{{journal}}},
-        year = {{{year}}},
-        number = {{{number}}},
-        volume = {{{volume}}}
-        }}"
+    title = {{{title}}},
+    author = {{{author}}},
+    journal = {{{journal}}},
+    year = {{{year}}},
+    number = {{{number}}},
+    volume = {{{volume}}}
+}}
+"
         );
 
-        let _out_path: &str = "/home/andrem/Documents/notes_science/test.bib";
-
+        // Create a file
+        // let mut data_file = File::create("data.txt").expect("creation failed");
         // fs::write(out_path, output).expect("Unable to write file.");
+
+        let file = OpenOptions::new().append(true).open(out_path);
+        // .expect("Unable to open file.");
+
+        let _ = match file {
+            Ok(mut f) => f.write(output.as_bytes()),
+            Err(e) => panic!("Unable to open file: {:?}", e),
+        };
     }
     Ok(())
 }
