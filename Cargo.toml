@@ -5,4 +5,5 @@ edition = "2021"
 
 [dependencies]
 serde = "1.0.192"
+walkdir = "2.4.0"
 yaml-front-matter = "0.1.0"
