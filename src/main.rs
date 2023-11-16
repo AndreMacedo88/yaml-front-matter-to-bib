@@ -1,11 +1,10 @@
 use serde::Deserialize;
+use std::error::Error;
 use std::fs::metadata;
 use std::fs::{self, OpenOptions};
-// use walkdir::{DirEntry, WalkDir};
-use std::error::Error;
 use std::io::Write;
 use std::result::Result;
-use walkdir::{Result as ResultWalk, WalkDir};
+use walkdir::WalkDir;
 use yaml_front_matter::{Document, YamlFrontMatter};
 
 #[derive(Deserialize)]
@@ -18,7 +17,7 @@ struct Metadata {
     volume: u32,
 }
 
-fn main() -> ResultWalk<()> {
+fn main() -> Result<(), Box<dyn Error>> {
     let out_path: &str = "/home/andrem/Documents/notes_science/test.bib";
     let dir_path: &str = "/home/andrem/Documents/notes_science/";
     for entry in WalkDir::new(dir_path)
