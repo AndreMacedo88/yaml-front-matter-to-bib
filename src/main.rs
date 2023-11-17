@@ -31,7 +31,7 @@ struct Args {
     input_directory: String,
 
     /// Path to store the output .bib file
-    #[arg(short, long, default_value_t = String::from("bibliography.bib"))]
+    #[arg(short, long, default_value = "bibliography.bib")]
     output_path: String,
 
     /// Overwrites an existing output file instead of appending to it
@@ -42,11 +42,10 @@ struct Args {
 fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
 
-    let dir_path: String = args.input_directory;
     let out_path: &Path = Path::new(&args.output_path);
 
     // create/open a file in the output directory
-    let file_result = if out_path.exists() & !args.overwrite {
+    let file_result = if out_path.exists() && !args.overwrite {
         OpenOptions::new().append(true).open(out_path)
     } else {
         File::create(out_path)
@@ -56,7 +55,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Err(e) => panic!("Unable to open file: {:?}", e),
     };
     // cycle the files and directories in the provided path
-    for entry in WalkDir::new(dir_path)
+    for entry in WalkDir::new(&args.input_directory)
         .follow_links(true)
         .into_iter()
         .filter_map(|entry| entry.ok())
@@ -64,21 +63,20 @@ fn main() -> Result<(), Box<dyn Error>> {
         // turn the DirEntry object into a Path object
         let path = entry.path();
         // check if the path is pointing to a directory or to a file that is not a markdown
-        if metadata(path).unwrap().is_dir() {
-            continue;
-        }
-        if !path.to_str().unwrap().to_lowercase().ends_with(".md") {
+        if metadata(path).unwrap().is_dir()
+            || !path.to_str().unwrap().to_lowercase().ends_with(".md")
+        {
             continue;
         }
         // read the file and parse the YAML front matter
-        let f: String = fs::read_to_string(path).expect("Should have been able to read the file");
+        let f: String = fs::read_to_string(path)?;
         let parsed_document: Result<Document<Metadata>, Box<dyn Error>> =
             YamlFrontMatter::parse::<Metadata>(&f);
         let yaml_front_matter: Document<Metadata> = match parsed_document {
             Ok(content) => content,
             Err(_) => continue,
         };
-        // unpack the front matter to the Metadata struct
+        // unpack the front matter to each variable
         let Metadata {
             title,
             author,
