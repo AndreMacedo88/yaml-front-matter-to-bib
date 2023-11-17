@@ -1,9 +1,9 @@
 use clap::Parser;
 use serde::Deserialize;
 use std::error::Error;
-use std::fs::metadata;
-use std::fs::{self, File};
+use std::fs::{self, metadata, File, OpenOptions};
 use std::io::Write;
+use std::path::Path;
 use std::result::Result;
 use walkdir::WalkDir;
 use yaml_front_matter::{Document, YamlFrontMatter};
@@ -33,19 +33,24 @@ struct Args {
     /// Path to store the output .bib file
     #[arg(short, long, default_value_t = String::from("bibliography.bib"))]
     output_path: String,
+
+    /// Overwrites an existing output file instead of appending to it
+    #[arg(short = 'O', long, action)]
+    overwrite: bool,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
 
     let dir_path: String = args.input_directory;
-    let out_path: String = args.output_path;
+    let out_path: &Path = Path::new(&args.output_path);
 
-    // let out_path: &str = "/home/andrem/Documents/notes_science/test.bib";
-    // let dir_path: &str = "/home/andrem/Documents/notes_science/";
-
-    // create and open a file in the output directory
-    let file_result = File::create(out_path);
+    // create/open a file in the output directory
+    let file_result = if out_path.exists() & !args.overwrite {
+        OpenOptions::new().append(true).open(out_path)
+    } else {
+        File::create(out_path)
+    };
     let mut file = match file_result {
         Ok(f) => f,
         Err(e) => panic!("Unable to open file: {:?}", e),
