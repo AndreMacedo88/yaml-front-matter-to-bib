@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+clap = { version = "4.4.8", features = ["derive"] }
 serde = "1.0.192"
 walkdir = "2.4.0"
 yaml-front-matter = "0.1.0"

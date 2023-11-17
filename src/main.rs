@@ -1,3 +1,4 @@
+use clap::parser;
 use serde::Deserialize;
 use std::error::Error;
 use std::fs::metadata;
@@ -40,7 +41,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         if metadata(path).unwrap().is_dir() {
             continue;
         }
-        if !path.to_str().unwrap().ends_with(".md") {
+        if !path.to_str().unwrap().to_lowercase().ends_with(".md") {
             continue;
         }
         // read the file and parse the YAML front matter
