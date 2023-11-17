@@ -7,6 +7,8 @@ use std::path::Path;
 use std::result::Result;
 use walkdir::WalkDir;
 use yaml_front_matter::{Document, YamlFrontMatter};
+mod cli;
+pub use crate::cli::Args;
 
 #[derive(Deserialize)]
 struct Metadata {
@@ -17,26 +19,6 @@ struct Metadata {
     volume: u32,
     number: u32,
     pages: String,
-}
-
-/// A program to gather and turn YAML-formatted front matter of markdown files into a single, correctly formatted, .bib file.
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
-#[command(
-    help_template = "Running: {name}\nAuthor: {author-with-newline} {about-section}Version: {version} \n\n {usage-heading} {usage} \n {all-args} {tab}"
-)]
-struct Args {
-    /// Path to directory to search for markdown files
-    #[arg(short, long)]
-    input_directory: String,
-
-    /// Path to store the output .bib file
-    #[arg(short, long, default_value = "bibliography.bib")]
-    output_path: String,
-
-    /// Overwrites an existing output file instead of appending to it
-    #[arg(short = 'O', long, action)]
-    overwrite: bool,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
