@@ -1,4 +1,4 @@
-use clap::parser;
+use clap::Parser;
 use serde::Deserialize;
 use std::error::Error;
 use std::fs::metadata;
@@ -19,9 +19,30 @@ struct Metadata {
     pages: String,
 }
 
+/// A program to gather and turn YAML-formatted front matter of markdown files into a single, correctly formatted, .bib file.
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+#[command(
+    help_template = "Running: {name}\nAuthor: {author-with-newline} {about-section}Version: {version} \n\n {usage-heading} {usage} \n {all-args} {tab}"
+)]
+struct Args {
+    /// Path to directory to search for markdown files
+    #[arg(short, long)]
+    input_directory: String,
+
+    /// Path to store the output .bib file
+    #[arg(short, long, default_value_t = String::from("bibliography.bib"))]
+    output_path: String,
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
-    let out_path: &str = "/home/andrem/Documents/notes_science/test.bib";
-    let dir_path: &str = "/home/andrem/Documents/notes_science/";
+    let args = Args::parse();
+
+    let dir_path: String = args.input_directory;
+    let out_path: String = args.output_path;
+
+    // let out_path: &str = "/home/andrem/Documents/notes_science/test.bib";
+    // let dir_path: &str = "/home/andrem/Documents/notes_science/";
 
     // create and open a file in the output directory
     let file_result = File::create(out_path);
