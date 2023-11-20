@@ -1,5 +1,4 @@
 use clap::Parser;
-use serde::Deserialize;
 use std::error::Error;
 use std::fs::{self, metadata, File, OpenOptions};
 use std::io::Write;
@@ -8,18 +7,9 @@ use std::result::Result;
 use walkdir::WalkDir;
 use yaml_front_matter::{Document, YamlFrontMatter};
 mod cli;
+mod fields;
 pub use crate::cli::Args;
-
-#[derive(Deserialize)]
-struct Metadata {
-    title: String,
-    author: String,
-    journal: String,
-    year: u16,
-    volume: u32,
-    number: u32,
-    pages: String,
-}
+pub use fields::{create_bio_like_articles, Metadata};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
@@ -58,35 +48,22 @@ fn main() -> Result<(), Box<dyn Error>> {
             Ok(content) => content,
             Err(_) => continue,
         };
-        // unpack the front matter to each variable
-        let Metadata {
-            title,
-            author,
-            journal,
-            year,
-            number,
-            volume,
-            pages,
-        } = yaml_front_matter.metadata;
         // get the first author's last name to use as the Key in the .bib format
-        let authors: Vec<&str> = author.split("and").collect();
+        let authors = &yaml_front_matter.metadata.author;
+        let authors: Vec<&str> = authors.split("and").collect();
         let first: &str = authors[0].trim();
         let first: Vec<&str> = first.split(" ").collect();
         let last_name: &str = first[first.len() - 1];
         // build the .bib formatted string to write to file
-        let output: String = format!(
-            "@article{{{last_name}{year},
-    title = {{{title}}},
-    author = {{{author}}},
-    journal = {{{journal}}},
-    year = {{{year}}},
-    number = {{{number}}},
-    volume = {{{volume}}},
-    pages = {{{pages}}}
-}}
-"
+        let headers = create_bio_like_articles(&yaml_front_matter);
+        let mut output: String = format!(
+            "@article{{{}{},\n",
+            last_name, &yaml_front_matter.metadata.year
         );
-
+        for val in headers {
+            output = format!("{}    {},\n", output, val);
+        }
+        output = format!("{}}}\n", output);
         // append these lines to the file
         file.write(output.as_bytes())?;
     }
