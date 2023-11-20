@@ -7,14 +7,28 @@ use std::result::Result;
 use walkdir::WalkDir;
 use yaml_front_matter::{Document, YamlFrontMatter};
 mod cli;
-mod fields;
-pub use crate::cli::Args;
-pub use fields::{create_bio_like_articles, Metadata};
+mod front_matter_types;
+pub use cli::cli::Args;
+// pub use front_matter_types::get_type_objects;
+pub use front_matter_types::article_bio_like;
+
+fn get_type_objects(arg: String) {
+    match arg.as_str() {
+        "article_bio_like" => {
+            pub use article_bio_like::{generate_bib_lines, Metadata};
+        }
+        _ => {
+            panic!("Type not yet implemented");
+        }
+    }
+}
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
 
     let out_path: &Path = Path::new(&args.output_path);
+
+    get_type_objects(args.style);
 
     // create/open a file in the output directory
     let file_result = if out_path.exists() && !args.overwrite {
@@ -55,12 +69,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         let first: Vec<&str> = first.split(" ").collect();
         let last_name: &str = first[first.len() - 1];
         // build the .bib formatted string to write to file
-        let headers = create_bio_like_articles(&yaml_front_matter);
+        let lines = generate_bib_lines(&yaml_front_matter);
         let mut output: String = format!(
             "@article{{{}{},\n",
             last_name, &yaml_front_matter.metadata.year
         );
-        for val in headers {
+        for val in lines {
             output = format!("{}    {},\n", output, val);
         }
         output = format!("{}}}\n", output);

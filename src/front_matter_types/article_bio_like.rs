@@ -12,7 +12,7 @@ pub struct Metadata {
     pub pages: String,
 }
 
-pub fn create_bio_like_articles<'a>(metadata: &Document<Metadata>) -> Vec<String> {
+pub fn generate_bib_lines<'a>(metadata: &Document<Metadata>) -> Vec<String> {
     let metadata: &Metadata = &metadata.metadata;
     vec![
         format!("title = {{{}}}", metadata.title),
