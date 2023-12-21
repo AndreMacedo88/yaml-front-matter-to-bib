@@ -1,7 +1,7 @@
 # yaml-header-to-bib
 ## What does this package do?
 This tool does the following:
-- Identifies the YAML section at the start of all markdown files in a directory
+- Identifies the YAML section at the start of all markdown files in a directory (recursive)
 - Creates a new bibtex/biblatex file with the parsed references
 
 ## Rationale
