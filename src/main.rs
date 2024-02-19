@@ -7,10 +7,10 @@ use std::result::Result;
 use walkdir::WalkDir;
 use yaml_front_matter::{Document, YamlFrontMatter};
 mod cli;
-mod front_matter_types;
+mod front_matter_styles;
 pub use cli::cli::Args;
-pub use front_matter_types::get_type_objects;
-pub use front_matter_types::article_bio_like;
+pub use front_matter_styles::get_type_objects;
+pub use front_matter_styles::article_bio_like;
 
 // fn get_type_objects(arg: String) {
 //     match arg.as_str() {
