@@ -9,19 +9,19 @@ use yaml_front_matter::{Document, YamlFrontMatter};
 mod cli;
 mod front_matter_types;
 pub use cli::cli::Args;
-// pub use front_matter_types::get_type_objects;
+pub use front_matter_types::get_type_objects;
 pub use front_matter_types::article_bio_like;
 
-fn get_type_objects(arg: String) {
-    match arg.as_str() {
-        "article_bio_like" => {
-            pub use article_bio_like::{generate_bib_lines, Metadata};
-        }
-        _ => {
-            panic!("Type not yet implemented");
-        }
-    }
-}
+// fn get_type_objects(arg: String) {
+//     match arg.as_str() {
+//         "article_bio_like" => {
+//             pub use article_bio_like::{generate_bib_lines, Metadata};
+//         }
+//         _ => {
+//             panic!("Type not yet implemented");
+//         }
+//     }
+// }
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
