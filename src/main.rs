@@ -1,4 +1,5 @@
 use clap::Parser;
+use front_matter_types::article_bio_like::MetadataBio;
 use std::error::Error;
 use std::fs::{self, metadata, File, OpenOptions};
 use std::io::Write;
@@ -10,18 +11,8 @@ mod cli;
 mod front_matter_types;
 pub use cli::cli::Args;
 // pub use front_matter_types::get_type_objects;
+pub use article_bio_like::{generate_bib_lines, MetadataBio};
 pub use front_matter_types::article_bio_like;
-
-fn get_type_objects(arg: String) {
-    match arg.as_str() {
-        "article_bio_like" => {
-            pub use article_bio_like::{generate_bib_lines, Metadata};
-        }
-        _ => {
-            panic!("Type not yet implemented");
-        }
-    }
-}
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
@@ -56,11 +47,16 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         // read the file and parse the YAML front matter
         let f: String = fs::read_to_string(path)?;
-        let parsed_document: Result<Document<Metadata>, Box<dyn Error>> =
-            YamlFrontMatter::parse::<Metadata>(&f);
-        let yaml_front_matter: Document<Metadata> = match parsed_document {
-            Ok(content) => content,
-            Err(_) => continue,
+        let yaml_front_matter = match args.style.as_str() {
+            "article_bio_like" => {
+                let parsed_document: Result<Document<MetadataBio>, Box<dyn Error>> =
+                    YamlFrontMatter::parse::<MetadataBio>(&f);
+                match parsed_document {
+                    Ok(content) => content,
+                    Err(_) => continue,
+                };
+            }
+            _ => panic!("Type not yet implemented"),
         };
         // get the first author's last name to use as the Key in the .bib format
         let authors = &yaml_front_matter.metadata.author;

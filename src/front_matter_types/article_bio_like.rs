@@ -2,7 +2,7 @@ use serde::Deserialize;
 use yaml_front_matter::Document;
 
 #[derive(Deserialize)]
-pub struct Metadata {
+pub struct MetadataBio {
     pub title: String,
     pub author: String,
     pub journal: String,
@@ -12,8 +12,8 @@ pub struct Metadata {
     pub pages: String,
 }
 
-pub fn generate_bib_lines<'a>(metadata: &Document<Metadata>) -> Vec<String> {
-    let metadata: &Metadata = &metadata.metadata;
+pub fn generate_bib_lines<'a>(metadata: &Document<MetadataBio>) -> Vec<String> {
+    let metadata: &MetadataBio = &metadata.metadata;
     vec![
         format!("title = {{{}}}", metadata.title),
         format!("author = {{{}}}", metadata.author),
