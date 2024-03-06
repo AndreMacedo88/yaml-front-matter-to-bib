@@ -1,5 +1,4 @@
 use clap::Parser;
-use front_matter_types::article_bio_like::MetadataBio;
 use std::error::Error;
 use std::fs::{self, metadata, File, OpenOptions};
 use std::io::Write;
@@ -11,15 +10,12 @@ mod cli;
 mod front_matter_types;
 pub use cli::cli::Args;
 // pub use front_matter_types::get_type_objects;
-pub use article_bio_like::{generate_bib_lines, MetadataBio};
-pub use front_matter_types::article_bio_like;
+pub use front_matter_types::article_bio_like::{generate_bib_lines, MetadataBio};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
 
     let out_path: &Path = Path::new(&args.output_path);
-
-    get_type_objects(args.style);
 
     // create/open a file in the output directory
     let file_result = if out_path.exists() && !args.overwrite {
@@ -31,6 +27,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Ok(f) => f,
         Err(e) => panic!("Unable to open file: {:?}", e),
     };
+
     // cycle the files and directories in the provided path
     for entry in WalkDir::new(&args.input_directory)
         .follow_links(true)
@@ -45,17 +42,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         {
             continue;
         }
+
         // read the file and parse the YAML front matter
         let f: String = fs::read_to_string(path)?;
         let yaml_front_matter = match args.style.as_str() {
-            "article_bio_like" => {
-                let parsed_document: Result<Document<MetadataBio>, Box<dyn Error>> =
-                    YamlFrontMatter::parse::<MetadataBio>(&f);
-                match parsed_document {
-                    Ok(content) => content,
-                    Err(_) => continue,
-                };
-            }
+            "article_bio_like" => front_matter_types::parse_document_bio(f),
             _ => panic!("Type not yet implemented"),
         };
         // get the first author's last name to use as the Key in the .bib format
