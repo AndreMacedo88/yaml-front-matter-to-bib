@@ -7,10 +7,6 @@ mod front_matter_types;
 pub fn parse_document_bio(f: String) {
     let parsed_document: Result<Document<MetadataBio>, Box<dyn Error>> =
         YamlFrontMatter::parse::<MetadataBio>(&f);
-    match parsed_document {
-        Ok(content) => content,
-        Err(_) => continue, // should continue to the next line... how to mantain this behaviour here?
-    };
 }
 
 // fn article_bio_like_() -> (fn(), fn()) {

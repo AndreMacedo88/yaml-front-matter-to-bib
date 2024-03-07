@@ -45,9 +45,13 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         // read the file and parse the YAML front matter
         let f: String = fs::read_to_string(path)?;
-        let yaml_front_matter = match args.style.as_str() {
+        let parsed_document = match args.style.as_str() {
             "article_bio_like" => front_matter_types::parse_document_bio(f),
             _ => panic!("Type not yet implemented"),
+        };
+        let yaml_front_matter = match parsed_document {
+            Ok(content) => content,
+            Err(_) => continue, // should continue to the next line... how to mantain this behaviour here?
         };
         // get the first author's last name to use as the Key in the .bib format
         let authors = &yaml_front_matter.metadata.author;
