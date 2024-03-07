@@ -51,7 +51,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         };
         let yaml_front_matter = match parsed_document {
             Ok(content) => content,
-            Err(_) => continue, // should continue to the next line... how to mantain this behaviour here?
+            Err(_) => continue,
         };
         // get the first author's last name to use as the Key in the .bib format
         let authors = &yaml_front_matter.metadata.author;
