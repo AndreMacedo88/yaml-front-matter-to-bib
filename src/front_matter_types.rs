@@ -10,7 +10,7 @@ pub fn parse_document_bio(f: String) -> Result<Document<MetadataBio>, Box<dyn Er
 }
 
 #[cfg(test)]
-mod tests {
+mod tests_parse_document_bio {
     use super::*;
 
     fn test_parse_document_bio_data() -> String {
