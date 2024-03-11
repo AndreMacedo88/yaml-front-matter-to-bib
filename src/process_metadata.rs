@@ -17,7 +17,7 @@ pub fn wrap_metadata_lines(year: &u16, last_name: &str, lines: Vec<String>) -> S
 
 #[cfg(test)]
 mod tests_get_first_author_last_name {
-    use super::*;
+    use super::get_first_author_last_name;
 
     #[test]
     fn test_correct_last_name() {
@@ -28,6 +28,40 @@ mod tests_get_first_author_last_name {
         );
         let result: &str = get_first_author_last_name(&authors);
         let expected: &str = "McTest";
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_one_author() {
+        let authors: String = String::from(
+            "
+    Test McTest
+        ",
+        );
+        let result: &str = get_first_author_last_name(&authors);
+        let expected: &str = "McTest";
+        assert_eq!(result, expected);
+    }
+}
+
+#[cfg(test)]
+mod tests_wrap_metadata_lines {
+    use super::wrap_metadata_lines;
+
+    #[test]
+    fn test_correct_wrap() {
+        let lines: Vec<String> = vec![
+            String::from("title = {{test}}"),
+            String::from("author = {{Test McTest}}"),
+        ];
+        let result: String = wrap_metadata_lines(&2000, "McTest", lines);
+        let expected: String = String::from(
+            "@article{McTest2000,
+    title = test,
+    author = Test McTest,
+}
+        ",
+        );
         assert_eq!(result, expected);
     }
 }
