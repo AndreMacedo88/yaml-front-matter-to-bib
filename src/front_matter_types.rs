@@ -13,7 +13,6 @@ pub fn parse_document_bio(f: String) -> Result<Document<MetadataBio>, Box<dyn Er
 mod tests {
     use super::*;
 
-    #[test]
     fn test_parse_document_bio_data() -> String {
         let test_f: String = String::from(
             "
@@ -34,19 +33,52 @@ this is a test
         test_f
     }
 
+    #[test]
     fn test_title() {
         let test_f: String = test_parse_document_bio_data();
         let result: Document<MetadataBio> = parse_document_bio(test_f).unwrap();
         assert_eq!(result.metadata.title, String::from("1"));
     }
-}
 
-// let expected_result = MetadataBio {
-//     title: String::from("1"),
-//     author: String::from("2"),
-//     journal: String::from("3"),
-//     year: u16::from(4),
-//     volume: u32::from(5),
-//     number: u32::from(6),
-//     pages: String::from("7"),
-// };
+    #[test]
+    fn test_author() {
+        let test_f: String = test_parse_document_bio_data();
+        let result: Document<MetadataBio> = parse_document_bio(test_f).unwrap();
+        assert_eq!(result.metadata.author, String::from("2"));
+    }
+
+    #[test]
+    fn test_journal() {
+        let test_f: String = test_parse_document_bio_data();
+        let result: Document<MetadataBio> = parse_document_bio(test_f).unwrap();
+        assert_eq!(result.metadata.journal, String::from("3"));
+    }
+
+    #[test]
+    fn test_year() {
+        let test_f: String = test_parse_document_bio_data();
+        let result: Document<MetadataBio> = parse_document_bio(test_f).unwrap();
+        assert_eq!(result.metadata.year, 4);
+    }
+
+    #[test]
+    fn test_volume() {
+        let test_f: String = test_parse_document_bio_data();
+        let result: Document<MetadataBio> = parse_document_bio(test_f).unwrap();
+        assert_eq!(result.metadata.volume, 5);
+    }
+
+    #[test]
+    fn test_number() {
+        let test_f: String = test_parse_document_bio_data();
+        let result: Document<MetadataBio> = parse_document_bio(test_f).unwrap();
+        assert_eq!(result.metadata.number, 6);
+    }
+
+    #[test]
+    fn test_pages() {
+        let test_f: String = test_parse_document_bio_data();
+        let result: Document<MetadataBio> = parse_document_bio(test_f).unwrap();
+        assert_eq!(result.metadata.pages, String::from("7"));
+    }
+}

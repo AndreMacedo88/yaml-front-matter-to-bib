@@ -5,7 +5,7 @@ use std::io::Write;
 use std::path::Path;
 use std::result::Result;
 use walkdir::WalkDir;
-use yaml_front_matter::{Document, YamlFrontMatter};
+// use yaml_front_matter::{Document, YamlFrontMatter};
 mod cli;
 mod front_matter_types;
 pub use cli::cli::Args;
