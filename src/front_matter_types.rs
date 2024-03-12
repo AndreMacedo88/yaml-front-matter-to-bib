@@ -9,6 +9,17 @@ pub fn parse_document_bio(f: String) -> Result<Document<MetadataBio>, Box<dyn Er
     parsed_document
 }
 
+pub fn get_yaml_front_matter(
+    f: String,
+    style: &str,
+) -> Result<Document<MetadataBio>, Box<dyn Error>> {
+    let parsed_document: Result<Document<MetadataBio>, Box<dyn Error>> = match style {
+        "article_bio_like" => parse_document_bio(f),
+        _ => panic!("Type not yet implemented"),
+    };
+    parsed_document
+}
+
 #[cfg(test)]
 mod tests_parse_document_bio {
     use super::*;

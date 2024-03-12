@@ -4,12 +4,14 @@ use std::fs::{self, metadata, File, OpenOptions};
 use std::io::Write;
 use std::path::Path;
 use std::result::Result;
-use walkdir::WalkDir;
+use walkdir::{DirEntry, WalkDir};
+use yaml_front_matter::Document;
 mod cli;
 mod front_matter_types;
 mod process_metadata;
 use cli::cli::Args;
 use front_matter_types::article_bio_like::{generate_bib_metadata_lines, MetadataBio};
+use front_matter_types::get_yaml_front_matter;
 use process_metadata::{get_first_author_last_name, wrap_metadata_lines};
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -17,7 +19,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let args: Args = Args::parse();
 
     // create/open a file in the output directory
-    let out_path: &Path = Path::new(&args.output_path);
+    let out_path: &Path = Path::new(args.output_path.as_str());
     let file_result: Result<File, std::io::Error> = if out_path.exists() && !args.overwrite {
         OpenOptions::new().append(true).open(out_path)
     } else {
@@ -29,10 +31,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     };
 
     // cycle the files and directories in the provided path
-    for entry in WalkDir::new(&args.input_directory)
+    for entry in WalkDir::new(args.input_directory.as_str())
         .follow_links(true)
         .into_iter()
-        .filter_map(|entry: Result<walkdir::DirEntry, walkdir::Error>| entry.ok())
+        .filter_map(|entry: Result<DirEntry, walkdir::Error>| entry.ok())
     {
         // turn the DirEntry object into a Path object
         let path: &Path = entry.path();
@@ -46,12 +48,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         // read the file and parse the YAML front matter
         let f: String = fs::read_to_string(path)?;
-        let parsed_document: Result<yaml_front_matter::Document<MetadataBio>, Box<dyn Error>> =
-            match args.style.as_str() {
-                "article_bio_like" => front_matter_types::parse_document_bio(f),
-                _ => panic!("Type not yet implemented"),
-            };
-        let yaml_front_matter: yaml_front_matter::Document<MetadataBio> = match parsed_document {
+        let parsed_document: Result<Document<MetadataBio>, Box<dyn Error>> =
+            get_yaml_front_matter(f, args.style.as_str());
+        let yaml_front_matter: Document<MetadataBio> = match parsed_document {
             Ok(content) => content,
             Err(_) => continue,
         };
