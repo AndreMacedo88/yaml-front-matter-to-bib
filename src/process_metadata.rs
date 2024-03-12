@@ -51,16 +51,15 @@ mod tests_wrap_metadata_lines {
     #[test]
     fn test_correct_wrap() {
         let lines: Vec<String> = vec![
-            String::from("title = {{test}}"),
-            String::from("author = {{Test McTest}}"),
+            String::from("title = {test}"),
+            String::from("author = {Test McTest}"),
         ];
         let result: String = wrap_metadata_lines(&2000, "McTest", lines);
         let expected: String = String::from(
             "@article{McTest2000,
-    title = test,
-    author = Test McTest,
-}
-        ",
+    title = {test},
+    author = {Test McTest},
+}\n",
         );
         assert_eq!(result, expected);
     }
