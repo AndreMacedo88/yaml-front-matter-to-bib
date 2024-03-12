@@ -36,7 +36,7 @@ mod tests_generate_bib_metadata_lines {
             year: 4,
             volume: 5,
             number: 6,
-            pages: String::from("7"),
+            pages: String::from("7-10"),
         };
         let result: Vec<String> = generate_bib_metadata_lines(&metadata);
         let expected: Vec<String> = vec![
@@ -46,7 +46,7 @@ mod tests_generate_bib_metadata_lines {
             String::from("year = {4}"),
             String::from("volume = {5}"),
             String::from("number = {6}"),
-            String::from("pages = {7}"),
+            String::from("pages = {7-10}"),
         ];
         assert_eq!(result, expected);
     }
