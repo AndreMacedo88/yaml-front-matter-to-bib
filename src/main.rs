@@ -7,11 +7,11 @@ use std::result::Result;
 use walkdir::{DirEntry, WalkDir};
 use yaml_front_matter::Document;
 mod cli;
-mod front_matter_types;
+mod front_matter_styles;
 mod process_metadata;
 use cli::cli::Args;
-use front_matter_types::article_bio_like::{generate_bib_metadata_lines, MetadataBio};
-use front_matter_types::get_yaml_front_matter;
+use front_matter_styles::article_bio_like::{generate_bib_metadata_lines, MetadataBio};
+use front_matter_styles::get_yaml_front_matter;
 use process_metadata::{get_first_author_last_name, wrap_metadata_lines};
 
 fn main() -> Result<(), Box<dyn Error>> {
