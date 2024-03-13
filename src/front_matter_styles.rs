@@ -4,20 +4,17 @@ use yaml_front_matter::{Document, YamlFrontMatter};
 pub mod article_bio_like;
 
 fn parse_document_bio(f: String) -> Result<Document<MetadataBio>, Box<dyn Error>> {
-    let parsed_document: Result<Document<MetadataBio>, Box<dyn Error>> =
-        YamlFrontMatter::parse::<MetadataBio>(&f);
-    parsed_document
+    YamlFrontMatter::parse::<MetadataBio>(&f)
 }
 
 pub fn get_yaml_front_matter(
     f: String,
     style: &str,
 ) -> Result<Document<MetadataBio>, Box<dyn Error>> {
-    let parsed_document: Result<Document<MetadataBio>, Box<dyn Error>> = match style {
+    match style {
         "article_bio_like" => parse_document_bio(f),
-        _ => panic!("Type not yet implemented"),
-    };
-    parsed_document
+        _ => Err("Type not yet implemented".into()),
+    }
 }
 
 #[cfg(test)]

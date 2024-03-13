@@ -3,16 +3,16 @@ use std::path::Path;
 
 pub fn create_open_output_file(output: &str, overwrite: bool) -> File {
     let out_path: &Path = Path::new(output);
-    let file_result: Result<File, std::io::Error> = if out_path.exists() && !overwrite {
-        OpenOptions::new().append(true).open(out_path)
-    } else {
+    let file_result: Result<File, std::io::Error> = if overwrite {
         File::create(out_path)
+    } else {
+        OpenOptions::new().append(true).create(true).open(out_path)
     };
-    let file: File = match file_result {
+
+    match file_result {
         Ok(f) => f,
         Err(e) => panic!("Unable to open file: {:?}", e),
-    };
-    file
+    }
 }
 
 #[cfg(test)]
