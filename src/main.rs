@@ -1,15 +1,17 @@
 use clap::Parser;
 use std::error::Error;
-use std::fs::{self, metadata, File, OpenOptions};
+use std::fs::{self, metadata, File};
 use std::io::Write;
 use std::path::Path;
 use std::result::Result;
 use walkdir::{DirEntry, WalkDir};
 use yaml_front_matter::Document;
 mod cli;
+mod file_handling;
 mod front_matter_styles;
 mod process_metadata;
 use cli::cli::Args;
+use file_handling::create_open_output_file;
 use front_matter_styles::article_bio_like::{generate_bib_metadata_lines, MetadataBio};
 use front_matter_styles::get_yaml_front_matter;
 use process_metadata::{get_first_author_last_name, wrap_metadata_lines};
@@ -17,18 +19,6 @@ use process_metadata::{get_first_author_last_name, wrap_metadata_lines};
 fn main() -> Result<(), Box<dyn Error>> {
     // parse CLI arguments
     let args: Args = Args::parse();
-
-    // create/open a file in the output directory
-    let out_path: &Path = Path::new(args.output_path.as_str());
-    let file_result: Result<File, std::io::Error> = if out_path.exists() && !args.overwrite {
-        OpenOptions::new().append(true).open(out_path)
-    } else {
-        File::create(out_path)
-    };
-    let mut file: File = match file_result {
-        Ok(f) => f,
-        Err(e) => panic!("Unable to open file: {:?}", e),
-    };
 
     // cycle the files and directories in the provided path
     for entry in WalkDir::new(args.input_directory.as_str())
@@ -63,8 +53,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         let output: String =
             wrap_metadata_lines(&yaml_front_matter.metadata.year, last_name, lines);
 
+        // create/open a file in the output directory
+        let mut output_handle: File =
+            create_open_output_file(&args.output_path.as_str(), args.overwrite);
+
         // append these lines to the file
-        file.write(output.as_bytes())?;
+        output_handle.write(output.as_bytes())?;
     }
     Ok(())
 }
