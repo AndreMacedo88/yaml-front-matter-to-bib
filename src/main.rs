@@ -46,7 +46,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         };
 
         // get the first author's last name to use as the Key in the .bib format
-        let last_name: &str = get_first_author_last_name(&yaml_front_matter.metadata.author);
+        let last_name: &str = get_first_author_last_name(&yaml_front_matter.metadata.author)?;
 
         // build the .bib formatted string to write to file
         let lines: Vec<String> = generate_bib_metadata_lines(&yaml_front_matter.metadata);
