@@ -50,6 +50,13 @@ The reason for this is that in the .bib format `issue` has a different [meaning]
 For journals with page number, it's usually the `324-328` in the AMA formatted citation: `... 2022;31(4):324-328`
 For journals with article number, it's Usually the `123` in the AMA formatted citation: `... 2022;31(4):123`
 
+## Installation
+
+Note: Outside of building this repo yourself, currently I only supply a binary for Ubuntu 20 LTS.
+To use this tool, simply:
+1. download the latest release binary in the [release page](https://github.com/AndreMacedo88/yaml-front-matter-to-bib/releases)
+2. run the binary `$ ./yaml-front-matter-to-bib [OPTIONS] --input-directory <INPUT_DIRECTORY>`
+
 ## Current test coverage
 
 <a href="https://app.codecov.io/gh/AndreMacedo88/yaml-front-matter-to-bib?search=&displayType=list" > 

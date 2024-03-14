@@ -1,8 +1,9 @@
 [package]
-name = "yaml_head_to_bib"
-version = "0.1.1"
+name = "yaml-front-matter-to-bib"
+version = "1.0.0"
 edition = "2021"
 authors = ["Andre Macedo <andre.lopes.macedo@gmail.com>"]
+license = "BSD-3-Clause"
 readme = "https://github.com/AndreMacedo88/yaml-front-matter-to-bib/blob/main/README.md"
 
 [dependencies]
@@ -14,3 +15,8 @@ yaml-front-matter = "0.1.0"
 [dev-dependencies]
 pretty_assertions = "1.4.0"
 assert_cmd = "2.0.14"
+predicates = "3.1.0"
+
+[[bin]]
+name = "yaml-front-matter-to-bib"
+path = "src/main.rs"
