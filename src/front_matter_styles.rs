@@ -20,6 +20,7 @@ pub fn get_yaml_front_matter(
 #[cfg(test)]
 mod tests_parse_document_bio {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     fn test_file_bio_data() -> String {
         let test_f: String = String::from(

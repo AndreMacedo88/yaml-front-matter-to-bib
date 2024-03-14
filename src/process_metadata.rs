@@ -56,6 +56,7 @@ mod tests_get_first_author_last_name {
 #[cfg(test)]
 mod tests_wrap_metadata_lines {
     use super::wrap_metadata_lines;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn test_correct_wrap() {

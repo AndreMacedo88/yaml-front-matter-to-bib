@@ -26,6 +26,7 @@ pub fn generate_bib_metadata_lines<'a>(metadata: &MetadataBio) -> Vec<String> {
 #[cfg(test)]
 mod tests_generate_bib_metadata_lines {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn test_correct_lines() {

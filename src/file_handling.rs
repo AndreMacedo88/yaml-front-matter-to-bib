@@ -18,6 +18,7 @@ pub fn create_open_output_file(output: &str, overwrite: bool) -> File {
 #[cfg(test)]
 mod tests_create_open_output_file {
     use super::*;
+    use pretty_assertions::assert_eq;
     use std::fs;
     use std::io::Write;
 
