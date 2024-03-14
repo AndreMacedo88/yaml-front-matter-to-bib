@@ -1,6 +1,6 @@
 [package]
 name = "yaml_head_to_bib"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Andre Macedo <andre.lopes.macedo@gmail.com>"]
 readme = "https://github.com/AndreMacedo88/yaml-front-matter-to-bib/blob/main/README.md"

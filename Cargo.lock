@@ -466,7 +466,7 @@ dependencies = [
 
 [[package]]
 name = "yaml_head_to_bib"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "assert_cmd",
  "clap",
