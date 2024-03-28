@@ -53,6 +53,7 @@ For journals with article number, it's Usually the `123` in the AMA formatted ci
 ## Installation
 
 Note: Outside of building this repo yourself, currently I only supply a binary for Ubuntu 20 LTS.
+
 To use this tool, simply:
 1. download the latest release binary in the [release page](https://github.com/AndreMacedo88/yaml-front-matter-to-bib/releases)
 2. run the binary `$ ./yaml-front-matter-to-bib [OPTIONS] --input-directory <INPUT_DIRECTORY>`
