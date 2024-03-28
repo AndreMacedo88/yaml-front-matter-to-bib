@@ -1,3 +1,4 @@
+
 pub fn get_first_author_last_name(authors: &str) -> Result<&str, &'static str> {
     // Note that we use iterators instead of collecting into vectors for performance
     let first_author: &str = authors.split("and").next().ok_or("No author found")?.trim();
@@ -57,9 +58,10 @@ mod tests_get_first_author_last_name {
 mod tests_wrap_metadata_lines {
     use super::wrap_metadata_lines;
     use pretty_assertions::assert_eq;
+    use std::error::Error;
 
     #[test]
-    fn test_correct_wrap() {
+    fn test_correct_wrap() -> Result<(), Box<dyn Error>> {
         let lines: Vec<String> = vec![
             String::from("title = {test}"),
             String::from("author = {Test McTest}"),
@@ -72,5 +74,6 @@ mod tests_wrap_metadata_lines {
 }\n",
         );
         assert_eq!(result, expected);
+        Ok(())
     }
 }
