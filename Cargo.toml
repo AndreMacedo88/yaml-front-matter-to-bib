@@ -1,6 +1,6 @@
 [package]
 name = "yaml-front-matter-to-bib"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 authors = ["Andre Macedo <andre.lopes.macedo@gmail.com>"]
 license = "BSD-3-Clause"
