@@ -27,9 +27,10 @@ pub fn generate_bib_metadata_lines<'a>(metadata: &MetadataBio) -> Vec<String> {
 mod tests_generate_bib_metadata_lines {
     use super::*;
     use pretty_assertions::assert_eq;
+    use std::error::Error;
 
     #[test]
-    fn test_correct_lines() {
+    fn test_correct_lines() -> Result<(), Box<dyn Error>> {
         let metadata: MetadataBio = MetadataBio {
             title: String::from("1"),
             author: String::from("2"),
@@ -50,5 +51,6 @@ mod tests_generate_bib_metadata_lines {
             String::from("pages = {7-10}"),
         ];
         assert_eq!(result, expected);
+        Ok(())
     }
 }
