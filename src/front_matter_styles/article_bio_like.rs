@@ -11,7 +11,7 @@ pub struct MetadataBio {
     pub pages: String,
 }
 
-pub fn generate_bib_metadata_lines<'a>(metadata: &MetadataBio) -> Vec<String> {
+pub fn generate_bib_metadata_lines(metadata: &MetadataBio) -> Vec<String> {
     vec![
         format!("title = {{{}}}", metadata.title),
         format!("author = {{{}}}", metadata.author),

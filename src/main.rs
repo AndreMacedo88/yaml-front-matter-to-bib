@@ -10,7 +10,7 @@ mod cli;
 mod file_handling;
 mod front_matter_styles;
 mod process_metadata;
-use cli::cli::Args;
+use cli::cli_main::Args;
 use file_handling::create_open_output_file;
 use front_matter_styles::article_bio_like::{generate_bib_metadata_lines, MetadataBio};
 use front_matter_styles::get_yaml_front_matter;
@@ -49,7 +49,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         // build the .bib formatted string to write to file
         let lines: Vec<String> = generate_bib_metadata_lines(&yaml_front_matter.metadata);
         let output: String =
-            wrap_metadata_lines(&yaml_front_matter.metadata.year, &last_name, lines);
+            wrap_metadata_lines(&yaml_front_matter.metadata.year, last_name, lines);
 
         // append these lines to the file
         output_handle.write_all(output.as_bytes())?;
